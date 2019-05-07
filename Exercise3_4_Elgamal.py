@@ -35,7 +35,7 @@ def fast_inverse(a, m):
 
 def encrypt(p, g, public_a, m):
     k = 197
-    c_1 = fast_powering(g, k, p)
+    c_1 = fast_powering(g, k, p) % m
     c_2 = (m * fast_powering(public_a, k, p)) % p
     cipher_m = [c_1, c_2]
     return cipher_m
@@ -48,12 +48,13 @@ def decrypt(p, g, a, c):
     c_2 = int(c[1])
     c_1_a = fast_powering(c_1, a, p)
     inverse = fast_inverse(c_1_a, p)
-    cipher_c = (c_2 * inverse) % p
-    return cipher_c
+    cipher_c = (c_2 * inverse) #% p
+    return cipher_c #% p
 
-
+# 448378203247
 # Function Five: Determines if the user would like to encrypt or decrypt a message. This is where inputs are taken
 # from the user. Depending on the users inputs another function is called and its results are printed.
+
 
 def run():
     action = input("Choose option 1 or 2\n1. Encrypt\n2. Decrypt\n")
