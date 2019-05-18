@@ -1,4 +1,5 @@
-# Jenna Uba February 25, 2019
+import binascii
+# Jenna Uba May 16, 2019
 # This program uses Elgamal's Encryption method to take a message that is inputted by a user and encrypt it.
 # The program also uses Elgamal's Decryption method to take a  message and decrypt it.
 
@@ -35,7 +36,7 @@ def fast_inverse(a, m):
 
 def encrypt(p, g, public_a, m):
     k = 197
-    c_1 = fast_powering(g, k, p) % m
+    c_1 = fast_powering(g, k, p)
     c_2 = (m * fast_powering(public_a, k, p)) % p
     cipher_m = [c_1, c_2]
     return cipher_m
@@ -49,12 +50,17 @@ def decrypt(p, g, a, c):
     c_1_a = fast_powering(c_1, a, p)
     inverse = fast_inverse(c_1_a, p)
     cipher_c = (c_2 * inverse) % p
-    return cipher_c % p
+    test = format(cipher_c, '016b')
+    i = 0
+    output = ""
+    while i < len(test):
+        output += chr(int(test[i:i+8], 2))
+        i += 8
+    return output
 
-# 448378203247
+
 # Function Five: Determines if the user would like to encrypt or decrypt a message. This is where inputs are taken
 # from the user. Depending on the users inputs another function is called and its results are printed.
-
 
 def run():
     action = input("Choose option 1 or 2\n1. Encrypt\n2. Decrypt\n")
@@ -66,8 +72,11 @@ def run():
             key_public = int(input("Enter Public Key: "))
         else:
             key_public = 224
-        message = int(input("Enter Message: "))
-        print("The Encrypted Message is: ", encrypt(prime, element, key_public, message))
+        message = input("Enter Message: ")
+        msg = ' '.join(format(ord(x), '008b') for x in message)
+        msg = msg.replace(" ", '')
+        msg_int = int(msg, 2)
+        print("The Encrypted Message is: ", encrypt(prime, element, key_public, msg_int))
     else:
         key_private = int(input("Enter Private Key: "))
         cipher_str = input("Enter Cipher Text is form C1 C2: ")
@@ -76,3 +85,39 @@ def run():
 
 
 run()
+
+'''
+p = 65511
+g = 17
+A = 63208
+a = 153
+m = "hi"
+c = 27326, 50710
+
+
+Choose option 1 or 2
+1. Encrypt
+2. Decrypt
+1
+Enter Prime: 65521
+Enter Element: 17
+Choose option 1 or 2
+1. Enter Public Key
+2. Use Default Public Key: 224
+1
+Enter Public Key: 63208
+Enter Message: hi
+The Encrypted Message is:  [27326, 50710]
+
+
+Choose option 1 or 2
+1. Encrypt
+2. Decrypt
+2
+Enter Prime: 65521
+Enter Element: 17
+Enter Private Key: 153
+Enter Cipher Text is form C1 C2: 27326 50710
+The Decrypted Message is:  hi
+
+'''
